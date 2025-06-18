@@ -584,16 +584,16 @@
                         </div>
                         
                         <div class="social-links animate__animated animate__fadeInUp animate__delay-4s" data-aos="fade-up" data-aos-delay="800" aria-label="Social media links">
-                            <a href="https://github.com/ritikadev" target="_blank" rel="noopener noreferrer" aria-label="GitHub profile">
+                            <a href="#" target="_blank" rel="noopener noreferrer" aria-label="GitHub profile">
                                 <i class="fab fa-github" aria-hidden="true"></i>
                             </a>
-                            <a href="https://linkedin.com/in/ritikadev" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn profile">
+                            <a href="#" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn profile">
                                 <i class="fab fa-linkedin-in" aria-hidden="true"></i>
                             </a>
-                            <a href="https://twitter.com/ritikadev" target="_blank" rel="noopener noreferrer" aria-label="Twitter profile">
+                            <a href="#" target="_blank" rel="noopener noreferrer" aria-label="Twitter profile">
                                 <i class="fab fa-twitter" aria-hidden="true"></i>
                             </a>
-                            <a href="mailto:hello@ritikadev.com" aria-label="Send email">
+                            <a href="#" aria-label="Send email">
                                 <i class="fas fa-envelope" aria-hidden="true"></i>
                             </a>
                         </div>

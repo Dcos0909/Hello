@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <title>My Projects | Ritika - Java Full Stack Developer</title>
+    <link rel="icon" type="image/svg+xml" href="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/2615.svg">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Portfolio projects of Ritika, showcasing Java Full Stack development work">
     

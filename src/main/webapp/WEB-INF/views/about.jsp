@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <title>About Me | Ritika - Java Full Stack Developer</title>
+    <link rel="icon" type="image/svg+xml" href="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/2615.svg">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="About Ritika, a passionate Java Full Stack Developer">
     
@@ -234,9 +235,10 @@
             }
         }
     </style>
+<jsp:include page="navbar.jsp" />
 </head>
 <body>
-    <jsp:include page="navbar.jsp" />
+    
     
     <section class="about-section py-5">
         <div class="container">
@@ -268,7 +270,7 @@
                         <span class="skill-pill">Bootstrap</span>
                     </div>
                     
-                    <a href="/resume.pdf" class="btn btn-primary" style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); border: none; padding: 0.8rem 2rem; border-radius: 50px;">
+                    <a href="${pageContext.request.contextPath}/resume" class="btn btn-primary" style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); border: none; padding: 0.8rem 2rem; border-radius: 50px;">
                         <i class="fas fa-download me-2"></i> Download Resume
                     </a>
                 </div>

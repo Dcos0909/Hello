@@ -1,16 +1,20 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
-    <div class="container-fluid px-3 px-md-4 px-lg-5"> <!-- Improved padding classes -->
+<nav class="navbar navbar-expand-lg fixed-top" id="mainNav">
+    <div class="container-fluid px-3 px-md-4 px-lg-5">
         <!-- Brand/logo with animated gradient -->
         <a class="navbar-brand d-flex align-items-center" href="/">
             <span class="gradient-text me-2">Ritika</span>
             <span class="badge bg-primary rounded-pill fs-6 d-none d-sm-inline">Java Full Stack</span>
         </a>
         
-        <!-- Mobile toggle button with better touch target -->
+        <!-- Mobile toggle button with animated hamburger -->
         <button class="navbar-toggler p-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" 
                 aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
         </button>
         
         <!-- Navbar links with improved mobile layout -->
@@ -31,12 +35,12 @@
                        data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="fas fa-code me-1"></i> <span class="d-lg-none">Skills</span>
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="skillsDropdown">
-                        <li><a class="dropdown-item py-2" href="/skills#frontend">Frontend</a></li>
-                        <li><a class="dropdown-item py-2" href="/skills#backend">Backend</a></li>
-                        <li><a class="dropdown-item py-2" href="/skills#database">Database</a></li>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="skillsDropdown">
+                        <li><a class="dropdown-item py-2" href="/skills#frontend"><i class="fas fa-paint-brush me-2"></i>Frontend</a></li>
+                        <li><a class="dropdown-item py-2" href="/skills#backend"><i class="fas fa-server me-2"></i>Backend</a></li>
+                        <li><a class="dropdown-item py-2" href="/skills#database"><i class="fas fa-database me-2"></i>Database</a></li>
                         <li><hr class="dropdown-divider my-1"></li>
-                        <li><a class="dropdown-item py-2" href="/skills#all">All Skills</a></li>
+                        <li><a class="dropdown-item py-2" href="/skills#all"><i class="fas fa-list-ul me-2"></i>All Skills</a></li>
                     </ul>
                 </li>
                 <li class="nav-item mx-1 mx-lg-0">
@@ -50,12 +54,13 @@
                     </a>
                 </li>
                 <li class="nav-item mx-1 mx-lg-0">
-                    <a class="nav-link btn-resume py-2 py-lg-1 px-3" href="/resume.pdf" target="_blank" 
+                    <a class="nav-link btn-resume py-2 py-lg-1 px-3" href="${pageContext.request.contextPath}/resume" 
                        data-bs-toggle="tooltip" data-bs-placement="bottom" title="Download Resume">
                         <i class="fas fa-file-pdf me-lg-1"></i> <span class="d-none d-lg-inline">Resume</span>
                     </a>
                 </li>
-                <!-- Dark mode toggle -->
+
+                <!-- Dark mode toggle with smooth transition -->
                 <li class="nav-item ms-lg-3 mx-1 mx-lg-0">
                     <button class="btn btn-sm btn-dark-mode p-2" id="darkModeToggle" aria-label="Toggle dark mode">
                         <i class="fas fa-moon" id="darkModeIcon"></i>
@@ -67,27 +72,31 @@
 </nav>
 
 <style>
-    /* Navbar specific styles */
+    /* ====== Modern Navbar Styles ====== */
     .navbar {
-        padding: 0.5rem 0;
-        transition: all 0.3s ease;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%) !important;
+        padding: 0.75rem 0;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        backdrop-filter: blur(10px);
+        background-color: rgba(26, 26, 46, 0.85) !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     }
     
     .navbar.scrolled {
-        padding: 0.3rem 0;
+        padding: 0.5rem 0;
+        background-color: rgba(22, 22, 36, 0.95) !important;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
     }
     
+    /* Animated gradient text */
     .gradient-text {
-        background: linear-gradient(90deg, #8f94fb, #4e54c8);
+        background: linear-gradient(90deg, #8f94fb, #4e54c8, #8f94fb);
         -webkit-background-clip: text;
         background-clip: text;
         color: transparent;
-        font-weight: 600;
+        font-weight: 700;
         animation: gradientShift 8s ease infinite;
         background-size: 200% 200%;
-        font-size: 1.1rem;
+        font-size: 1.25rem;
     }
     
     @keyframes gradientShift {
@@ -96,48 +105,91 @@
         100% { background-position: 0% 50%; }
     }
     
+    /* Custom hamburger menu */
+    .hamburger {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 24px;
+        height: 18px;
+        cursor: pointer;
+    }
+    
+    .hamburger span {
+        display: block;
+        width: 100%;
+        height: 2px;
+        background-color: white;
+        transition: all 0.3s ease;
+    }
+    
+    .navbar-toggler[aria-expanded="true"] .hamburger span:nth-child(1) {
+        transform: translateY(8px) rotate(45deg);
+    }
+    
+    .navbar-toggler[aria-expanded="true"] .hamburger span:nth-child(2) {
+        opacity: 0;
+    }
+    
+    .navbar-toggler[aria-expanded="true"] .hamburger span:nth-child(3) {
+        transform: translateY(-8px) rotate(-45deg);
+    }
+    
+    /* Nav link styles */
     .nav-link {
         position: relative;
-        margin: 0 0.1rem;
+        margin: 0 0.25rem;
         font-weight: 500;
         transition: all 0.3s ease;
         font-size: 0.95rem;
+        color: rgba(255, 255, 255, 0.85);
+    }
+    
+    .nav-link:hover,
+    .nav-link.active {
+        color: white !important;
     }
     
     .nav-link::after {
         content: '';
         position: absolute;
         bottom: 0;
-        left: 0;
+        left: 50%;
+        transform: translateX(-50%);
         width: 0;
         height: 2px;
         background: linear-gradient(90deg, #8f94fb, #4e54c8);
-        transition: width 0.3s ease;
+        transition: width 0.3s ease, left 0.3s ease;
     }
     
     .nav-link:hover::after,
     .nav-link.active::after {
-        width: 100%;
+        width: 80%;
+        left: 50%;
     }
     
+    /* Resume button */
     .btn-resume {
         background: linear-gradient(90deg, #8f94fb, #4e54c8);
-        border-radius: 50px;
-        padding: 0.4rem 1rem !important;
+        border-radius: 8px;
+        padding: 0.5rem 1.25rem !important;
         color: white !important;
-        transition: all 0.3s ease;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         font-size: 0.95rem;
+        border: none;
+        box-shadow: 0 2px 10px rgba(78, 84, 200, 0.3);
     }
     
     .btn-resume:hover {
         transform: translateY(-2px);
-        box-shadow: 0 4px 10px rgba(78, 84, 200, 0.4);
+        box-shadow: 0 6px 15px rgba(78, 84, 200, 0.4);
     }
     
+    /* Dark mode toggle */
     .btn-dark-mode {
-        border-radius: 50%;
-        width: 34px;
-        height: 34px;
+        border-radius: 8px;
+        width: 38px;
+        height: 38px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -149,44 +201,72 @@
     
     .btn-dark-mode:hover {
         background: rgba(255, 255, 255, 0.2);
-        transform: rotate(20deg);
+        transform: rotate(15deg);
     }
     
+    /* Dropdown menu */
     .dropdown-menu {
         border: none;
-        background: #1a1a2e;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(10px);
+        background-color: rgba(30, 30, 46, 0.95);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        padding: 0.5rem 0;
+        animation: fadeIn 0.2s ease-out;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(5px); }
+        to { opacity: 1; transform: translateY(0); }
     }
     
     .dropdown-item {
         color: rgba(255, 255, 255, 0.8);
         transition: all 0.2s ease;
         font-size: 0.9rem;
+        padding: 0.5rem 1.5rem;
+        border-radius: 4px;
+        margin: 0 0.5rem;
+        width: auto;
     }
     
     .dropdown-item:hover {
-        background: rgba(78, 84, 200, 0.2);
+        background: linear-gradient(90deg, rgba(78, 84, 200, 0.2), transparent);
         color: white;
-        padding-left: 1.25rem;
+        padding-left: 1.75rem;
+    }
+    
+    .dropdown-divider {
+        border-color: rgba(255, 255, 255, 0.08);
     }
     
     /* Mobile-specific styles */
     @media (max-width: 992px) {
         .navbar-collapse {
-            padding: 0.5rem 1rem;
-            background: #1a1a2e;
-            border-radius: 0.5rem;
-            margin-top: 0.5rem;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            padding: 1rem;
+            backdrop-filter: blur(10px);
+            background-color: rgba(26, 26, 46, 0.95) !important;
+            border-radius: 12px;
+            margin-top: 1rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             max-height: 70vh;
             overflow-y: auto;
         }
         
-        .nav-link {
+        .nav-item {
             margin: 0.25rem 0;
-            padding: 0.75rem 1rem !important;
-            display: flex;
-            align-items: center;
+        }
+        
+        .nav-link {
+            padding: 0.75rem 1.25rem !important;
+            border-radius: 8px;
+            margin: 0.25rem 0;
+        }
+        
+        .nav-link:hover,
+        .nav-link.active {
+            background: rgba(255, 255, 255, 0.1);
         }
         
         .nav-link::after {
@@ -198,64 +278,66 @@
             align-items: center;
             justify-content: center;
             width: 100%;
-            margin: 0.25rem 0;
-            padding: 0.75rem 1rem !important;
+            margin: 0.5rem 0 0;
         }
         
         .dropdown-menu {
-            margin-left: 1.5rem;
-            width: calc(100% - 3rem);
+            margin: 0.5rem 0 0 1rem;
+            width: calc(100% - 2rem);
+            background-color: rgba(20, 20, 40, 0.95);
         }
         
         .btn-dark-mode {
-            margin: 0.5rem auto;
-            display: block;
+            margin: 0.75rem auto 0;
+            display: flex;
         }
     }
     
-    /* Very small devices (phones, 480px and down) */
-    @media (max-width: 480px) {
-        .gradient-text {
-            font-size: 1rem;
-        }
-        
-        .navbar-brand .badge {
-            font-size: 0.7rem;
-            padding: 0.25rem 0.5rem;
-        }
-        
-        .navbar-toggler {
-            padding: 0.4rem !important;
-        }
+    /* Dark mode styles */
+    body.dark-mode .navbar {
+        background-color: rgba(18, 18, 30, 0.95) !important;
+        border-bottom-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    body.dark-mode .navbar.scrolled {
+        background-color: rgba(10, 10, 20, 0.98) !important;
+    }
+    
+    body.dark-mode .dropdown-menu {
+        background-color: rgba(20, 20, 35, 0.98);
     }
 </style>
 
 <script>
-    // Navbar scroll effect
+    // Enhanced Navbar scroll effect
     window.addEventListener('scroll', function() {
         const navbar = document.getElementById('mainNav');
-        if (window.scrollY > 50) {
+        if (window.scrollY > 30) {
             navbar.classList.add('scrolled');
         } else {
             navbar.classList.remove('scrolled');
         }
     });
     
-    // Initialize tooltips only on desktop
+    // Initialize tooltips with delay
     document.addEventListener('DOMContentLoaded', function() {
         if (window.innerWidth > 992) {
             const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
             tooltipTriggerList.map(function (tooltipTriggerEl) {
-                return new bootstrap.Tooltip(tooltipTriggerEl);
+                return new bootstrap.Tooltip(tooltipTriggerEl, {
+                    delay: { show: 300, hide: 100 }
+                });
             });
         }
         
-        // Dark mode toggle functionality
+        // Enhanced dark mode toggle
         const darkModeToggle = document.getElementById('darkModeToggle');
         const darkModeIcon = document.getElementById('darkModeIcon');
         const body = document.body;
         
-        if (localStorage.getItem('darkMode') === 'enabled') {
+        // Check for saved preference or system preference
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (localStorage.getItem('darkMode') === 'enabled' || (localStorage.getItem('darkMode') === null && prefersDark)) {
             body.classList.add('dark-mode');
             darkModeIcon.classList.replace('fa-moon', 'fa-sun');
         }
@@ -284,5 +366,26 @@
                 }
             });
         }
+    });
+    
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                window.scrollTo({
+                    top: target.offsetTop - 80,
+                    behavior: 'smooth'
+                });
+                
+                // Close mobile menu if open
+                const navbarToggler = document.querySelector('.navbar-toggler');
+                if (navbarToggler && !navbarToggler.classList.contains('collapsed')) {
+                    const collapse = new bootstrap.Collapse(document.getElementById('navbarResponsive'));
+                    collapse.hide();
+                }
+            }
+        });
     });
 </script>

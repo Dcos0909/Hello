@@ -14,7 +14,8 @@
 	<groupId>com.babu</groupId>
 	<artifactId>Babu</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
+
 	<name>Babu</name>
 	<description>Tab Seven Test</description>
 

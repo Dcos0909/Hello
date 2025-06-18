@@ -8,7 +8,7 @@
             <li class="nav-item"><a class="nav-link" href="/skills">Skills</a></li>
             <li class="nav-item"><a class="nav-link" href="/projects">Projects</a></li>
             <li class="nav-item"><a class="nav-link" href="/contact">Contact</a></li>
-            <li class="nav-item"><a class="nav-link" href="/resume.pdf" target="_blank">Resume</a></li>
+            <li class="nav-item"><a class="nav-link" href="/" target="_blank">Resume</a></li>
         </ul>
     </div>
 </nav>

@@ -203,7 +203,7 @@
                         <i class="fas fa-envelope"></i>
                     </div>
                     <h3>Email</h3>
-                    <a href="mailto:Ritika@example.com" class="contact-link">Ritika@example.com</a>
+                    <a href="#" class="contact-link">Ritika@example.com</a>
                 </div>
                 
                 <!-- GitHub Card -->
@@ -212,7 +212,7 @@
                         <i class="fab fa-github"></i>
                     </div>
                     <h3>GitHub</h3>
-                    <a href="https://github.com/Ritika" target="_blank" class="contact-link">github.com/Ritika</a>
+                    <a href="#" target="_blank" class="contact-link">github.com/Ritika</a>
                 </div>
                 
                 <!-- LinkedIn Card -->
@@ -221,7 +221,7 @@
                         <i class="fab fa-linkedin-in"></i>
                     </div>
                     <h3>LinkedIn</h3>
-                    <a href="https://linkedin.com/in/Ritika" target="_blank" class="contact-link">linkedin.com/in/Ritika</a>
+                    <a href="#" target="_blank" class="contact-link">linkedin.com/in/Ritika</a>
                 </div>
                 
                 <!-- Phone Card -->

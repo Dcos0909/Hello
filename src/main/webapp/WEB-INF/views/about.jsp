@@ -255,7 +255,7 @@
                 
                 <div class="about-content">
                     <h2>Who I Am</h2>
-                    <p>I'm Ritika, a passionate Java Full Stack Developer with expertise in building robust, scalable web applications. With a strong foundation in Java technologies and a keen eye for detail, I specialize in creating efficient, user-friendly solutions that solve real-world problems.</p>
+                    <p>I'm Ritika, a passionate  Full Stack Developer with expertise in building robust, scalable web applications. With a strong foundation in Java technologies and a keen eye for detail, I specialize in creating efficient, user-friendly solutions that solve real-world problems.</p>
                     
                     <p>My journey in software development began with a fascination for problem-solving and has evolved into a career dedicated to crafting clean, maintainable code and intuitive user experiences. I believe in continuous learning and staying updated with the latest industry trends.</p>
                     

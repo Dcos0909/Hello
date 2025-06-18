@@ -2,7 +2,7 @@
 <html lang="en" itemscope itemtype="https://schema.org/Person">
 <head>
     <!-- Primary Meta Tags -->
-    <title>Ritika | Java Full Stack Developer | Spring Boot Specialist</title>
+    <title>Ritika | Full Stack Developer | Spring Boot Specialist</title>
     <meta name="description" content="Professional portfolio of Ritika, Senior Java Full Stack Developer with 5+ years experience in Spring Boot, Microservices, and modern web development.">
     
     <!-- Canonical URL -->
@@ -570,6 +570,7 @@
                                 <span class="typed-cursor" aria-hidden="true">|</span>
                             </span>
                         </h2>
+                        <br/>
                         <p class="lead mb-4 animate__animated animate__fadeInUp animate__delay-2s" data-aos="fade-up" data-aos-delay="400">
                             I build robust, scalable web applications with modern technologies and clean code practices.
                         </p>
@@ -629,7 +630,7 @@
             
             // Typewriter effect
             const typewriterElement = document.getElementById('typewriter');
-            const professions = ['Java Full Stack Developer', 'Spring Boot Expert', 'Web Application Developer', 'Software Engineer'];
+            const professions = ['Full Stack Developer', 'Spring Boot Expert', 'Web Application Developer', 'Software Engineer'];
             let professionIndex = 0;
             let charIndex = 0;
             let isDeleting = false;

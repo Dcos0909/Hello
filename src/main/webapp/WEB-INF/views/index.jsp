@@ -4,7 +4,7 @@
     <!-- Primary Meta Tags -->
     <title>Ritika | Full Stack Developer | Spring Boot Specialist</title>
     <meta name="description" content="Professional portfolio of Ritika, Senior Java Full Stack Developer with 5+ years experience in Spring Boot, Microservices, and modern web development.">
-    
+    <meta name="google-site-verification" content="1lyRfTRP0uZFkMXkEwH2hbMm9MgksFHQnj9byEo4V9g" />
     <!-- Canonical URL -->
     <link rel="canonical" href="https://www.ritikadev.com/" />
     

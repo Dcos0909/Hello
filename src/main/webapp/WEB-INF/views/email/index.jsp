@@ -33,7 +33,6 @@
 
 <!-- Other Libraries -->
 <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-<script src="https://cdn.ckeditor.com/ckeditor5/40.2.0/classic/ckeditor.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.6.1/dist/sockjs.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
 
@@ -289,7 +288,7 @@
 							</div>
 							<div class="form-group">
 								<label>Email Message</label>
-								<textarea name="message" id="messageEditor" class="form-control" rows="8" required></textarea>
+								<textarea name="message" class="form-control" rows="8" placeholder="Enter your email message here..." required></textarea>
 							</div>
 						</form>
 					</div>
@@ -813,18 +812,7 @@ function emailApp() {
     }
 }
 
-// Initialize CKEditor
-let editorInstance;
-document.addEventListener('DOMContentLoaded', function() {
-    ClassicEditor
-        .create(document.querySelector('#messageEditor'), {
-           toolbar: ['bold', 'italic', 'underline', '|', 'link', 'bulletedList', 'numberedList', '|', 'blockQuote', 'insertTable', '|', 'undo', 'redo']
-        })
-        .then(editor => {
-            editorInstance = editor;
-        })
-        .catch(error => {});
-});
+// Simple textarea - no editor needed
 </script>
 </body>
 </html>

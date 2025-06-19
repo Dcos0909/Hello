@@ -1,0 +1,10 @@
+user1@gmail.com
+user2@yahoo.com
+user3@hotmail.com
+admin@company.com
+support@website.org
+contact@business.net
+info@startup.io
+hello@example.com
+test@domain.com
+sample@email.org

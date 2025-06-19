@@ -305,18 +305,20 @@
 							</button>
 						</div>
 					</div>
-					<div class="card-body table-responsive">
-						<table class="table table-bordered table-striped table-sm dt-responsive nowrap" id="emailTable" style="width:100%">
-							<thead>
-								<tr>
-									<th>Email Address</th>
-									<th>Status</th>
-									<th>Progress</th>
-									<th>Action</th>
-								</tr>
-							</thead>
-							<tbody></tbody>
-						</table>
+					<div class="card-body">
+						<div class="table-responsive">
+							<table class="table table-bordered table-striped table-sm dt-responsive nowrap" id="emailTable" style="width:100%">
+								<thead>
+									<tr>
+										<th>Email Address</th>
+										<th>Status</th>
+										<th>Progress</th>
+										<th>Action</th>
+									</tr>
+								</thead>
+								<tbody></tbody>
+							</table>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -388,6 +390,7 @@
 
 <script src="/js/email-toggle.js"></script>
 <script src="/js/email-helpers.js"></script>
+<script src="/js/email-responsive.js"></script>
 <script>
 // EmailFlow Pro - Main Application JavaScript
 function emailApp() {
@@ -584,7 +587,24 @@ function emailApp() {
 
             this.dataTable = $('#emailTable').DataTable({
                 data: tableData,
-                responsive: true,
+                responsive: {
+                    details: {
+                        display: $.fn.dataTable.Responsive.display.childRowImmediate,
+                        type: 'none',
+                        renderer: function(api, rowIdx, columns) {
+                            var data = $.map(columns, function(col, i) {
+                                return col.hidden ?
+                                    '<tr data-dt-row="'+col.rowIndex+'" data-dt-column="'+col.columnIndex+'">' +
+                                        '<td>'+col.title+':</td> ' +
+                                        '<td>'+col.data+'</td>' +
+                                    '</tr>' :
+                                    '';
+                            }).join('');
+                            
+                            return data ? $('<table class="table table-sm"/>').append(data) : false;
+                        }
+                    }
+                },
                 pageLength: 25,
                 lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
                 columnDefs: [
@@ -595,14 +615,18 @@ function emailApp() {
                 ],
                 language: {
                     search: "Search:",
-                    lengthMenu: "Show _MENU_ entries",
-                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                    lengthMenu: "Show _MENU_",
+                    info: "Showing _START_ to _END_ of _TOTAL_",
                     paginate: {
                         first: "First",
                         last: "Last",
                         next: "Next",
-                        previous: "Previous"
+                        previous: "Prev"
                     }
+                },
+                fixedHeader: {
+                    header: true,
+                    headerOffset: $('.main-header').outerHeight()
                 }
             });
         },

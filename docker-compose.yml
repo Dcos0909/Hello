@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  emailflow-app:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - JAVA_OPTS=-Dmail.util.StreamProvider.class=org.eclipse.angus.mail.util.DefaultStreamProvider -Dmail.mime.StreamProvider.class=org.eclipse.angus.mail.util.DefaultStreamProvider
+      - SERVER_PORT=8080
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s

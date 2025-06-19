@@ -1,0 +1,11 @@
+target/
+!target/TabSeven.jar
+.git
+.gitignore
+README.md
+Dockerfile
+.dockerignore
+*.log
+*.tmp
+.DS_Store
+Thumbs.db

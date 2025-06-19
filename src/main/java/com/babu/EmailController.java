@@ -434,19 +434,25 @@ public class EmailController {
             throw new RuntimeException("Email credentials not configured. Please configure in Settings.");
         }
         
-        MimeMessage mimeMessage = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
-        
-        helper.setFrom(mailSenderImpl.getUsername());
-        helper.setTo(to);
-        helper.setSubject(subject);
-        helper.setText(message, true);
-        
-        if (attachment != null && !attachment.isEmpty()) {
-            helper.addAttachment(attachment.getOriginalFilename(), attachment);
+        try {
+            MimeMessage mimeMessage = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+            
+            helper.setFrom(mailSenderImpl.getUsername());
+            helper.setTo(to);
+            helper.setSubject(subject);
+            helper.setText(message, true);
+            
+            if (attachment != null && !attachment.isEmpty()) {
+                helper.addAttachment(attachment.getOriginalFilename(), attachment);
+            }
+            
+            mailSender.send(mimeMessage);
+            logger.info("Email sent successfully to: {}", to);
+        } catch (Exception e) {
+            logger.error("Failed to send email to {}: {}", to, e.getMessage());
+            throw e;
         }
-        
-        mailSender.send(mimeMessage);
     }
 
     private List<String> readEmailsFromFile(MultipartFile file) throws Exception {

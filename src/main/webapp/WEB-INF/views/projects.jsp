@@ -209,29 +209,30 @@
                     </div>
                 </div>
                 
-                <!-- Project 2 -->
+                <!-- Project 2 - EmailFlow Pro -->
                 <div class="col-lg-6 animate-on-scroll">
                     <div class="project-card">
                         <div class="project-card-header">
-                            <h3>Email Sender App</h3>
+                            <h3>EmailFlow Pro</h3>
                         </div>
                         <div class="project-card-body">
-                            <p class="mb-4">A bulk email sender application with real-time progress tracking using WebSocket, supporting attachments and templates.</p>
+                            <p class="mb-4">Enterprise email campaign manager with real-time progress tracking, bulk sending, individual controls, and comprehensive reporting.</p>
                             
                             <div class="mb-4">
                                 <span class="tech-badge">Spring Boot</span>
                                 <span class="tech-badge">WebSocket</span>
-                                <span class="tech-badge">Thymeleaf</span>
-                                <span class="tech-badge">Redis</span>
-                                <span class="tech-badge">jQuery</span>
+                                <span class="tech-badge">AdminLTE</span>
+                                <span class="tech-badge">Alpine.js</span>
+                                <span class="tech-badge">DataTables</span>
+                                <span class="tech-badge">Gmail API</span>
                             </div>
                             
                             <div class="project-links">
-                                <a href="https://github.com/Ritika/email-sender" target="_blank" class="github-link">
-                                    <i class="fab fa-github me-2"></i> View Code
+                                <a href="/email/" class="demo-link">
+                                    <i class="fas fa-envelope me-2"></i> Launch App
                                 </a>
-                                <a href="#" class="demo-link">
-                                    <i class="fas fa-external-link-alt me-2"></i> Live Demo
+                                <a href="/email/howto" class="github-link">
+                                    <i class="fas fa-question-circle me-2"></i> How to Use
                                 </a>
                             </div>
                         </div>

@@ -34,6 +34,11 @@ public class PageController {
     public String projects() {
         return "projects";
     }
+    
+    @GetMapping("/projects/email")
+    public String emailProject() {
+        return "redirect:/email/";
+    }
 
     @GetMapping("/contact")
     public String contact() {

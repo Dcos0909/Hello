@@ -15,8 +15,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.beans.factory.annotation.Value;
-
-import jakarta.mail.internet.MimeMessage;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -428,6 +426,9 @@ public class EmailController {
         return (int) ((processedEmails.get() * 100.0) / totalEmails.get());
     }
 
+    @Autowired
+    private SimpleEmailService simpleEmailService;
+
     private void sendEmail(String to, String subject, String message, MultipartFile attachment) throws Exception {
         JavaMailSenderImpl mailSenderImpl = (JavaMailSenderImpl) mailSender;
         if (mailSenderImpl.getUsername() == null || mailSenderImpl.getPassword() == null) {
@@ -435,19 +436,9 @@ public class EmailController {
         }
         
         try {
-            MimeMessage mimeMessage = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
-            
-            helper.setFrom(mailSenderImpl.getUsername());
-            helper.setTo(to);
-            helper.setSubject(subject);
-            helper.setText(message, true);
-            
-            if (attachment != null && !attachment.isEmpty()) {
-                helper.addAttachment(attachment.getOriginalFilename(), attachment);
-            }
-            
-            mailSender.send(mimeMessage);
+            // Use simple email service to bypass Jakarta Mail issues
+            simpleEmailService.sendEmail(to, subject, message, 
+                mailSenderImpl.getUsername(), mailSenderImpl.getPassword());
             logger.info("Email sent successfully to: {}", to);
         } catch (Exception e) {
             logger.error("Failed to send email to {}: {}", to, e.getMessage());

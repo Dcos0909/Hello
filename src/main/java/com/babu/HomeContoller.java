@@ -1,10 +1,4 @@
-/*
- * package com.babu;
- * 
- * import org.springframework.web.bind.annotation.GetMapping; import
- * org.springframework.web.bind.annotation.RestController;
- * 
- * @RestController public class HomeContoller {
- * 
- * @Ge*?tMapping("/") public String home() { return "Vaibhav"; } }
- hello*/
+package com.babu;
+
+// This file is not needed as PageController handles home mapping
+// Keeping as placeholder - can be deleted

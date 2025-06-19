@@ -1,23 +1,31 @@
-# Railway-specific Dockerfile
-FROM openjdk:17-jdk-slim
+# Use OpenJDK 17 with Alpine Linux for smaller image size
+FROM openjdk:17-jdk-alpine
 
 # Set working directory
 WORKDIR /app
 
-# Install Maven
-RUN apt-get update && apt-get install -y maven curl && rm -rf /var/lib/apt/lists/*
+# Install required packages
+RUN apk add --no-cache curl
 
-# Copy project files
-COPY . .
+# Copy Maven wrapper and pom.xml first for better caching
+COPY mvnw .
+COPY .mvn .mvn
+COPY pom.xml .
+
+# Make Maven wrapper executable
+RUN chmod +x ./mvnw
+
+# Download dependencies (this layer will be cached if pom.xml doesn't change)
+RUN ./mvnw dependency:go-offline -B
+
+# Copy source code
+COPY src ./src
 
 # Build the application
-RUN mvn clean package -DskipTests
+RUN ./mvnw clean package -DskipTests
 
-# Set Jakarta Mail system properties
-ENV JAVA_OPTS="-Dmail.util.StreamProvider.class=org.eclipse.angus.mail.util.DefaultStreamProvider -Dmail.mime.StreamProvider.class=org.eclipse.angus.mail.util.DefaultStreamProvider"
+# Expose port
+EXPOSE 8080
 
-# Expose port (Railway will set PORT environment variable)
-EXPOSE $PORT
-
-# Run the application with Railway's PORT
-CMD ["sh", "-c", "java $JAVA_OPTS -Dserver.port=$PORT -jar target/TabSeven.jar"]
+# Run the application
+CMD ["java", "-jar", "target/TabSeven.jar"]

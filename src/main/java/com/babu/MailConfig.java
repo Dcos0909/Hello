@@ -12,10 +12,6 @@ public class MailConfig {
 
     @Bean
     public JavaMailSender javaMailSender() {
-        // Set system properties early
-        System.setProperty("mail.util.StreamProvider.class", "org.eclipse.angus.mail.util.DefaultStreamProvider");
-        System.setProperty("mail.mime.StreamProvider.class", "org.eclipse.angus.mail.util.DefaultStreamProvider");
-        
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         mailSender.setHost("smtp.gmail.com");
         mailSender.setPort(587);

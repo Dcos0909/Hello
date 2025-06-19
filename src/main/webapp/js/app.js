@@ -6,6 +6,7 @@ function emailApp() {
         showPreview: false,
         showSettings: false,
         fileName: '',
+        recipientMethod: 'file',
         emailList: [],
         emailStatuses: {},
         dataTable: null,
@@ -147,6 +148,7 @@ function emailApp() {
             if (!file) return;
             
             this.fileName = file.name;
+            this.recipientMethod = 'file';
             
             const formData = new FormData();
             formData.append('emailFile', file);
@@ -172,6 +174,35 @@ function emailApp() {
             .catch(error => {
                 this.showToast('danger', 'Network Error', 'Upload failed', 'exclamation-triangle');
             });
+        },
+        
+        handleDirectEmailInput(event) {
+            const emailText = event.target.value;
+            if (!emailText) {
+                this.emailList = [];
+                return;
+            }
+            
+            // Parse comma-separated emails
+            const emails = emailText.split(',')
+                .map(email => email.trim())
+                .filter(email => email && email.includes('@'));
+                
+            if (emails.length > 0) {
+                this.emailList = emails;
+                this.emailStatuses = {};
+                emails.forEach(email => {
+                    this.emailStatuses[email] = 'Pending';
+                });
+                this.initializeDataTable();
+                
+                // Only show toast when we have a significant number of emails
+                if (emails.length >= 5) {
+                    this.showToast('success', 'Success!', `${emails.length} emails added`, 'check');
+                }
+            } else {
+                this.emailList = [];
+            }
         },
 
         getStatusClass(status) {
@@ -307,7 +338,7 @@ function emailApp() {
 
         submitForm() {
             if (this.emailList.length === 0) {
-                this.showToast('danger', 'No Emails', 'Please upload email list first', 'list');
+                this.showToast('danger', 'No Emails', 'Please add email recipients first', 'list');
                 return;
             }
 
@@ -320,6 +351,13 @@ function emailApp() {
             
             const form = document.getElementById('emailForm');
             const formData = new FormData(form);
+            
+            // Handle direct email input
+            if (this.recipientMethod === 'direct') {
+                // Create a temporary file with the direct emails
+                const emailsBlob = new Blob([this.emailList.join('\n')], {type: 'text/plain'});
+                formData.set('emailFile', emailsBlob, 'direct-emails.txt');
+            }
             
             if (editorInstance) {
                 formData.set('message', editorInstance.getData());

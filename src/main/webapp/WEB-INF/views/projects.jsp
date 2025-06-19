@@ -22,6 +22,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     
     <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/new-badge.css">
     <style>
         :root {
             --primary-color: #4e54c8;
@@ -213,7 +214,7 @@
                 <div class="col-lg-6 animate-on-scroll">
                     <div class="project-card">
                         <div class="project-card-header">
-                            <h3>EmailFlow Pro</h3>
+                            <h3>EmailFlow Pro <span class="new-badge">NEW</span></h3>
                         </div>
                         <div class="project-card-body">
                             <p class="mb-4">Enterprise email campaign manager with real-time progress tracking, bulk sending, individual controls, and comprehensive reporting.</p>
@@ -229,7 +230,7 @@
                             
                             <div class="project-links">
                                 <a href="/email/" class="demo-link">
-                                    <i class="fas fa-envelope me-2"></i> Launch App
+                                    <i class="fas fa-envelope me-2"></i> Launch App <span class="new-badge">NEW</span>
                                 </a>
                                 <a href="/email/howto" class="github-link">
                                     <i class="fas fa-question-circle me-2"></i> How to Use

@@ -13,6 +13,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/new-badge.css">
 
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -225,9 +226,31 @@
 								<div class="col-md-6">
 									<div class="form-group">
 										<label>Email Recipients</label>
-										<div class="custom-file">
-											<input type="file" name="emailFile" class="custom-file-input" accept=".txt,.csv" required @change="handleFileUpload($event)">
-											<label class="custom-file-label" x-text="fileName || 'Choose file'">Choose file</label>
+										<div class="input-group mb-2">
+											<div class="input-group-prepend">
+												<button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown">
+													<span x-text="recipientMethod === 'file' ? 'File Upload' : 'Direct Entry'"></span>
+												</button>
+												<div class="dropdown-menu">
+													<a class="dropdown-item" href="#" @click.prevent="recipientMethod = 'file'">File Upload</a>
+													<a class="dropdown-item" href="#" @click.prevent="recipientMethod = 'direct'">Direct Entry <span class="new-badge">NEW</span></a>
+												</div>
+											</div>
+										</div>
+										
+										<!-- File Upload Option -->
+										<div class="custom-file mb-3" x-show="recipientMethod === 'file'" style="display: block;">
+											<input type="file" name="emailFile" id="emailFile" class="custom-file-input" accept=".txt,.csv" @change="handleFileUpload($event)" :required="recipientMethod === 'file'">
+											<label class="custom-file-label" for="emailFile" x-text="fileName || 'Choose file'">Choose file</label>
+										</div>
+										
+										<!-- Direct Entry Option -->
+										<div x-show="recipientMethod === 'direct'" style="display: none;">
+											<textarea name="directEmails" id="directEmails" class="form-control" rows="3" 
+												placeholder="Enter email addresses separated by commas" 
+												:required="recipientMethod === 'direct'"
+												@input="handleDirectEmailInput($event)"></textarea>
+											<small class="form-text text-muted">Example: user1@example.com, user2@example.com</small>
 										</div>
 									</div>
 								</div>
@@ -360,6 +383,8 @@
 	</div>
 </div>
 
+<script src="/js/email-toggle.js"></script>
+<script src="/js/email-helpers.js"></script>
 <script>
 // EmailFlow Pro - Main Application JavaScript
 function emailApp() {
@@ -368,6 +393,7 @@ function emailApp() {
         showPreview: false,
         showSettings: false,
         fileName: '',
+        recipientMethod: 'file',
         emailList: [],
         emailStatuses: {},
         dataTable: null,
@@ -447,6 +473,7 @@ function emailApp() {
                     const update = JSON.parse(message.body);
                     this.emailStatuses[update.email] = update.status;
                     this.updateDataTableRow(update.email);
+                    console.log('Status update:', update.email, update.status);
                 });
             }, (error) => {});
         },
@@ -456,6 +483,11 @@ function emailApp() {
             if (!file) return;
             
             this.fileName = file.name;
+            this.recipientMethod = 'file';
+            
+            // Clear direct entry field if it exists
+            const directEmailsField = document.getElementById('directEmails');
+            if (directEmailsField) directEmailsField.value = '';
             
             const formData = new FormData();
             formData.append('emailFile', file);
@@ -482,6 +514,42 @@ function emailApp() {
                 this.showToast('danger', 'Network Error', 'Upload failed', 'exclamation-triangle');
             });
         },
+        
+        handleDirectEmailInput(event) {
+            const emailText = event.target.value;
+            if (!emailText) {
+                this.emailList = [];
+                return;
+            }
+            
+            this.recipientMethod = 'direct';
+            
+            // Clear file upload if it exists
+            const fileInput = document.getElementById('emailFile');
+            if (fileInput) fileInput.value = '';
+            this.fileName = '';
+            
+            // Parse comma-separated emails
+            const emails = emailText.split(',')
+                .map(email => email.trim())
+                .filter(email => email && email.includes('@'));
+                
+            if (emails.length > 0) {
+                this.emailList = emails;
+                this.emailStatuses = {};
+                emails.forEach(email => {
+                    this.emailStatuses[email] = 'Pending';
+                });
+                this.initializeDataTable();
+                
+                // Only show toast when we have a significant number of emails
+                if (emails.length >= 5) {
+                    this.showToast('success', 'Success!', `${emails.length} emails added`, 'check');
+                }
+            } else {
+                this.emailList = [];
+            }
+        },
 
         initializeDataTable() {
             if (this.dataTable) {
@@ -489,28 +557,76 @@ function emailApp() {
             }
             
             const tableData = this.emailList.map(email => {
+                const status = this.emailStatuses[email] || 'Pending';
+                const statusClass = getStatusClass(status);
+                const progressBarClass = getProgressBarClass(status);
+                const progressWidth = getProgressWidth(status);
+                
                 return [
                     email,
-                    `<span class="badge badge-light">Pending</span>`,
-                    `<div class="progress" style="height: 20px;"><div class="progress-bar bg-light" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div></div>`,
-                    `<button class="btn btn-success btn-sm">Send</button>`
+                    `<span class="badge ${statusClass}">${status}</span>`,
+                    `<div class="progress" style="height: 20px;"><div class="progress-bar ${progressBarClass}" role="progressbar" style="width: ${progressWidth}%" aria-valuenow="${progressWidth}" aria-valuemin="0" aria-valuemax="100"></div></div>`,
+                    `<button class="btn btn-success btn-sm" onclick="window.sendEmail('${email}')">Send</button>`
                 ];
             });
 
             this.dataTable = $('#emailTable').DataTable({
                 data: tableData,
-                responsive: true,
-                pageLength: 25
+                responsive: {
+                    details: {
+                        type: 'column',
+                        target: 'tr'
+                    }
+                },
+                pageLength: 25,
+                lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
+                columnDefs: [
+                    { responsivePriority: 1, targets: 0 },
+                    { responsivePriority: 2, targets: 1 },
+                    { responsivePriority: 4, targets: 2 },
+                    { responsivePriority: 3, targets: 3 }
+                ]
             });
         },
 
         updateDataTableRow(email) {
-            // Update table row logic
+            if (this.dataTable) {
+                const rowIndex = this.emailList.indexOf(email);
+                if (rowIndex !== -1) {
+                    let actionButton = '';
+                    const status = this.emailStatuses[email];
+                    
+                    if (status === 'Pending') {
+                        actionButton = `<button onclick="window.sendIndividualEmail('${email}')" class="btn btn-success btn-sm">Send</button>`;
+                    } else if (status === 'Queued' || status === 'Sending') {
+                        actionButton = `<button onclick="window.cancelEmail('${email}')" class="btn btn-danger btn-sm">Cancel</button>`;
+                    } else if (status === 'Failed' || status === 'Cancelled') {
+                        actionButton = `<button onclick="window.resendEmail('${email}')" class="btn btn-info btn-sm">Resend</button>`;
+                    } else {
+                        actionButton = '';
+                    }
+                    
+                    const statusClass = this.getStatusClass(status);
+                    const progressBarClass = this.getProgressBarClass(status);
+                    const progressWidth = this.getProgressWidth(status);
+                    
+                    try {
+                        this.dataTable.row(rowIndex).data([
+                            email,
+                            `<span class="badge ${statusClass}">${status}</span>`,
+                            `<div class="progress" style="height: 20px;"><div class="progress-bar ${progressBarClass}" role="progressbar" style="width: ${progressWidth}%" aria-valuenow="${progressWidth}" aria-valuemin="0" aria-valuemax="100"></div></div>`,
+                            actionButton
+                        ]).draw(false);
+                    } catch (e) {
+                        console.error('Error updating row:', e);
+                    }
+                }
+            }
         },
 
         submitForm() {
             if (this.emailList.length === 0) {
-                this.showToast('danger', 'No Emails', 'Please upload email list first', 'list');
+                this.showToast('danger', 'No Emails', 'Please add email recipients first', 'list');
                 return;
             }
 
@@ -521,6 +637,13 @@ function emailApp() {
             
             const form = document.getElementById('emailForm');
             const formData = new FormData(form);
+            
+            // Handle direct email input
+            if (this.recipientMethod === 'direct') {
+                // Create a temporary file with the direct emails
+                const emailsBlob = new Blob([this.emailList.join('\n')], {type: 'text/plain'});
+                formData.set('emailFile', emailsBlob, 'direct-emails.txt');
+            }
             
             this.campaignRunning = true;
             this.showProgress = true;
@@ -594,6 +717,41 @@ function emailApp() {
             .catch(error => {
                 this.showToast('danger', 'Error', 'Network error', 'exclamation-triangle');
             });
+        },
+
+
+
+        updateDataTableRow(email) {
+            if (this.dataTable) {
+                const rowIndex = this.emailList.indexOf(email);
+                if (rowIndex !== -1) {
+                    const status = this.emailStatuses[email];
+                    let actionButton = '';
+                    
+                    if (status === 'Pending') {
+                        actionButton = `<button class="btn btn-success btn-sm" onclick="window.sendEmail('${email}')">Send</button>`;
+                    } else if (status === 'Queued' || status === 'Sending') {
+                        actionButton = `<button class="btn btn-danger btn-sm" onclick="window.cancelEmail('${email}')">Cancel</button>`;
+                    } else if (status === 'Failed' || status === 'Cancelled') {
+                        actionButton = `<button class="btn btn-info btn-sm" onclick="window.resendEmail('${email}')">Resend</button>`;
+                    }
+                    
+                    try {
+                        const statusClass = getStatusClass(status);
+                        const progressBarClass = getProgressBarClass(status);
+                        const progressWidth = getProgressWidth(status);
+                        
+                        this.dataTable.row(rowIndex).data([
+                            email,
+                            `<span class="badge ${statusClass}">${status}</span>`,
+                            `<div class="progress" style="height: 20px;"><div class="progress-bar ${progressBarClass}" role="progressbar" style="width: ${progressWidth}%" aria-valuenow="${progressWidth}" aria-valuemin="0" aria-valuemax="100"></div></div>`,
+                            actionButton
+                        ]).draw(false);
+                    } catch (e) {
+                        console.error('Error updating row:', e);
+                    }
+                }
+            }
         },
 
         previewEmail() {

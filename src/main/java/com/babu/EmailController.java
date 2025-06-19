@@ -25,6 +25,7 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/email")
@@ -93,7 +94,8 @@ public class EmailController {
     @PostMapping("/send-bulk")
     @ResponseBody
     public Map<String, Object> sendBulkEmails(
-            @RequestParam("emailFile") MultipartFile emailFile,
+            @RequestParam(value = "emailFile", required = false) MultipartFile emailFile,
+            @RequestParam(value = "directEmails", required = false) String directEmails,
             @RequestParam("subject") String subject,
             @RequestParam("message") String message,
             @RequestParam(value = "attachment", required = false) MultipartFile attachment,
@@ -128,7 +130,20 @@ public class EmailController {
             emailTasks.clear();
             cancelledEmails.clear();
             
-            List<String> emails = readEmailsFromFile(emailFile);
+            List<String> emails;
+            if (emailFile != null && !emailFile.isEmpty()) {
+                emails = readEmailsFromFile(emailFile);
+            } else if (directEmails != null && !directEmails.trim().isEmpty()) {
+                emails = Arrays.stream(directEmails.split(","))
+                        .map(String::trim)
+                        .filter(email -> email.contains("@"))
+                        .collect(Collectors.toList());
+            } else {
+                response.put("status", "error");
+                response.put("message", "No email recipients provided");
+                return response;
+            }
+            
             totalEmails.set(emails.size());
             
             logger.info("Campaign initialized with {} recipients", emails.size());
@@ -188,6 +203,111 @@ public class EmailController {
             response.put("message", e.getMessage());
         }
         
+        return response;
+    }
+
+    @PostMapping("/cancel-email")
+    @ResponseBody
+    public Map<String, Object> cancelEmail(@RequestParam("email") String email) {
+        logger.info("Cancelling email for: {}", email);
+        Map<String, Object> response = new HashMap<>();
+        
+        if (emailStatus.containsKey(email)) {
+            String currentStatus = emailStatus.get(email);
+            if ("Pending".equals(currentStatus) || "Queued".equals(currentStatus) || "Sending".equals(currentStatus)) {
+                cancelledEmails.add(email);
+                CompletableFuture<Void> task = emailTasks.get(email);
+                if (task != null) {
+                    task.cancel(true);
+                    emailTasks.remove(email);
+                }
+                emailStatus.put(email, "Cancelled");
+                updateEmailStatus(email, "Cancelled");
+                response.put("status", "success");
+                response.put("message", "Email cancelled for " + email);
+            } else {
+                response.put("status", "error");
+                response.put("message", "Cannot cancel email with status: " + currentStatus);
+            }
+        } else {
+            response.put("status", "error");
+            response.put("message", "Email not found: " + email);
+        }
+        return response;
+    }
+
+    @PostMapping("/send-individual")
+    @ResponseBody
+    public Map<String, Object> sendIndividualEmail(@RequestParam("email") String email) {
+        logger.info("Sending individual email to: {}", email);
+        Map<String, Object> response = new HashMap<>();
+        
+        try {
+            JavaMailSenderImpl mailSenderImpl = (JavaMailSenderImpl) mailSender;
+            if (mailSenderImpl.getUsername() == null || mailSenderImpl.getPassword() == null) {
+                response.put("status", "error");
+                response.put("message", "Email credentials not configured");
+                return response;
+            }
+            
+            if (emailStatus.containsKey(email)) {
+                String currentStatus = emailStatus.get(email);
+                if ("Pending".equals(currentStatus)) {
+                    emailStatus.put(email, "Queued");
+                    updateEmailStatus(email, "Queued");
+                    response.put("status", "success");
+                    response.put("message", "Email queued for sending to " + email);
+                } else {
+                    response.put("status", "error");
+                    response.put("message", "Cannot send email with status: " + currentStatus);
+                }
+            } else {
+                response.put("status", "error");
+                response.put("message", "Email not found: " + email);
+            }
+        } catch (Exception e) {
+            logger.error("Error sending individual email: {}", e.getMessage());
+            response.put("status", "error");
+            response.put("message", e.getMessage());
+        }
+        return response;
+    }
+
+    @PostMapping("/resend-email")
+    @ResponseBody
+    public Map<String, Object> resendEmail(@RequestParam("email") String email) {
+        logger.info("Resending email for: {}", email);
+        Map<String, Object> response = new HashMap<>();
+        
+        try {
+            JavaMailSenderImpl mailSenderImpl = (JavaMailSenderImpl) mailSender;
+            if (mailSenderImpl.getUsername() == null || mailSenderImpl.getPassword() == null) {
+                response.put("status", "error");
+                response.put("message", "Email credentials not configured");
+                return response;
+            }
+            
+            if (emailStatus.containsKey(email)) {
+                String currentStatus = emailStatus.get(email);
+                if ("Cancelled".equals(currentStatus) || "Failed".equals(currentStatus)) {
+                    cancelledEmails.remove(email);
+                    emailStatus.put(email, "Queued");
+                    updateEmailStatus(email, "Queued");
+                    response.put("status", "success");
+                    response.put("message", "Email queued for resending to " + email);
+                } else {
+                    response.put("status", "error");
+                    response.put("message", "Cannot resend email with status: " + currentStatus);
+                }
+            } else {
+                response.put("status", "error");
+                response.put("message", "Email not found: " + email);
+            }
+        } catch (Exception e) {
+            logger.error("Error resending email: {}", e.getMessage());
+            response.put("status", "error");
+            response.put("message", e.getMessage());
+        }
         return response;
     }
 

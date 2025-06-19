@@ -12,6 +12,10 @@ public class MailConfig {
 
     @Bean
     public JavaMailSender javaMailSender() {
+        // Set system properties early
+        System.setProperty("mail.util.StreamProvider.class", "org.eclipse.angus.mail.util.DefaultStreamProvider");
+        System.setProperty("mail.mime.StreamProvider.class", "org.eclipse.angus.mail.util.DefaultStreamProvider");
+        
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         mailSender.setHost("smtp.gmail.com");
         mailSender.setPort(587);
@@ -24,9 +28,6 @@ public class MailConfig {
         props.put("mail.smtp.connectiontimeout", "5000");
         props.put("mail.smtp.timeout", "5000");
         props.put("mail.smtp.writetimeout", "5000");
-        
-        // Force use of Angus Mail provider
-        System.setProperty("mail.util.StreamProvider.class", "org.eclipse.angus.mail.util.DefaultStreamProvider");
         
         return mailSender;
     }

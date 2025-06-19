@@ -1,1 +1,1 @@
-web: java -Dserver.port=$PORT $JAVA_OPTS -jar target/TabSeven.jar
+web: java -Dserver.port=$PORT -Dmail.util.StreamProvider.class=org.eclipse.angus.mail.util.DefaultStreamProvider $JAVA_OPTS -jar target/TabSeven.jar

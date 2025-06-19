@@ -21,10 +21,12 @@ public class MailConfig {
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
         props.put("mail.smtp.ssl.trust", "smtp.gmail.com");
-        props.put("mail.debug", "true");
         props.put("mail.smtp.connectiontimeout", "5000");
         props.put("mail.smtp.timeout", "5000");
         props.put("mail.smtp.writetimeout", "5000");
+        
+        // Force use of Angus Mail provider
+        System.setProperty("mail.util.StreamProvider.class", "org.eclipse.angus.mail.util.DefaultStreamProvider");
         
         return mailSender;
     }

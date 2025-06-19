@@ -109,8 +109,9 @@ public class EmailController {
             if ("kuku".equals(mailSenderImpl.getUsername())) {
                 mailSenderImpl.setUsername(defaultUsername);
                 mailSenderImpl.setPassword(defaultPassword);
-                logger.info("Using default email credentials (kuku mode)");
-            } else if (mailSenderImpl.getUsername() == null || mailSenderImpl.getPassword() == null) {
+                logger.info("Using default email credentials (admin mode)");
+            } else if (mailSenderImpl.getUsername() == null || mailSenderImpl.getPassword() == null || 
+                      defaultUsername.equals(mailSenderImpl.getUsername())) {
                 response.put("status", "error");
                 response.put("message", "Email credentials not configured. Please configure in Settings.");
                 return response;
@@ -232,6 +233,14 @@ public class EmailController {
             }
             
             JavaMailSenderImpl mailSenderImpl = (JavaMailSenderImpl) mailSender;
+            
+            // Prevent users from setting default credentials directly
+            if (defaultUsername.equals(email.trim())) {
+                response.put("status", "error");
+                response.put("message", "Cannot use system reserved email address");
+                return response;
+            }
+            
             mailSenderImpl.setUsername(email.trim());
             mailSenderImpl.setPassword(password.trim());
             
@@ -254,8 +263,16 @@ public class EmailController {
         Map<String, Object> response = new HashMap<>();
         try {
             JavaMailSenderImpl mailSenderImpl = (JavaMailSenderImpl) mailSender;
-            response.put("email", mailSenderImpl.getUsername() != null ? mailSenderImpl.getUsername() : "");
-            response.put("hasPassword", mailSenderImpl.getPassword() != null && !mailSenderImpl.getPassword().isEmpty());
+            String currentUsername = mailSenderImpl.getUsername();
+            
+            // Hide default credentials from user - only show if user has set their own
+            if (defaultUsername.equals(currentUsername)) {
+                response.put("email", "");
+                response.put("hasPassword", false);
+            } else {
+                response.put("email", currentUsername != null ? currentUsername : "");
+                response.put("hasPassword", mailSenderImpl.getPassword() != null && !mailSenderImpl.getPassword().isEmpty());
+            }
         } catch (Exception e) {
             logger.error("Error getting credentials: {}", e.getMessage());
             response.put("email", "");

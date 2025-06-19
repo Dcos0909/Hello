@@ -14,6 +14,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
 <link rel="stylesheet" href="/css/new-badge.css">
+<link rel="stylesheet" href="/css/email-responsive.css">
 
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -23,10 +24,12 @@
 <!-- DataTables -->
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap4.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap4.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/fixedheader/3.4.0/css/fixedHeader.bootstrap4.min.css">
 <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap4.min.js"></script>
 <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
 <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap4.min.js"></script>
+<script src="https://cdn.datatables.net/fixedheader/3.4.0/js/dataTables.fixedHeader.min.js"></script>
 
 <!-- Other Libraries -->
 <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
@@ -303,13 +306,13 @@
 						</div>
 					</div>
 					<div class="card-body table-responsive">
-						<table class="table table-bordered table-striped table-sm" id="emailTable">
+						<table class="table table-bordered table-striped table-sm dt-responsive nowrap" id="emailTable" style="width:100%">
 							<thead>
 								<tr>
-									<th data-priority="1">Email Address</th>
-									<th data-priority="2">Status</th>
-									<th data-priority="3" class="d-none d-md-table-cell">Progress</th>
-									<th data-priority="4">Action</th>
+									<th>Email Address</th>
+									<th>Status</th>
+									<th>Progress</th>
+									<th>Action</th>
 								</tr>
 							</thead>
 							<tbody></tbody>
@@ -581,20 +584,26 @@ function emailApp() {
 
             this.dataTable = $('#emailTable').DataTable({
                 data: tableData,
-                responsive: {
-                    details: {
-                        type: 'column',
-                        target: 'tr'
-                    }
-                },
+                responsive: true,
                 pageLength: 25,
                 lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
                 columnDefs: [
                     { responsivePriority: 1, targets: 0 },
                     { responsivePriority: 2, targets: 1 },
-                    { responsivePriority: 4, targets: 2 },
-                    { responsivePriority: 3, targets: 3 }
-                ]
+                    { responsivePriority: 3, targets: 3 },
+                    { responsivePriority: 4, targets: 2, className: 'none' }
+                ],
+                language: {
+                    search: "Search:",
+                    lengthMenu: "Show _MENU_ entries",
+                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                    paginate: {
+                        first: "First",
+                        last: "Last",
+                        next: "Next",
+                        previous: "Previous"
+                    }
+                }
             });
         },
 

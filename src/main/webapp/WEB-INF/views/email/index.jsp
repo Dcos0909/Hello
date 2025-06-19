@@ -562,11 +562,20 @@ function emailApp() {
                 const progressBarClass = getProgressBarClass(status);
                 const progressWidth = getProgressWidth(status);
                 
+                let actionButton = '';
+                if (canSendEmail(status)) {
+                    actionButton = `<button onclick="window.sendEmail('${email}')" class="btn btn-success btn-sm">Send</button>`;
+                } else if (canCancelEmail(status)) {
+                    actionButton = `<button onclick="window.cancelEmail('${email}')" class="btn btn-danger btn-sm">Cancel</button>`;
+                } else if (canResendEmail(status)) {
+                    actionButton = `<button onclick="window.resendEmail('${email}')" class="btn btn-info btn-sm">Resend</button>`;
+                }
+                
                 return [
                     email,
                     `<span class="badge ${statusClass}">${status}</span>`,
                     `<div class="progress" style="height: 20px;"><div class="progress-bar ${progressBarClass}" role="progressbar" style="width: ${progressWidth}%" aria-valuenow="${progressWidth}" aria-valuemin="0" aria-valuemax="100"></div></div>`,
-                    `<button class="btn btn-success btn-sm" onclick="window.sendEmail('${email}')">Send</button>`
+                    actionButton
                 ];
             });
 
@@ -728,12 +737,12 @@ function emailApp() {
                     const status = this.emailStatuses[email];
                     let actionButton = '';
                     
-                    if (status === 'Pending') {
-                        actionButton = `<button class="btn btn-success btn-sm" onclick="window.sendEmail('${email}')">Send</button>`;
-                    } else if (status === 'Queued' || status === 'Sending') {
-                        actionButton = `<button class="btn btn-danger btn-sm" onclick="window.cancelEmail('${email}')">Cancel</button>`;
-                    } else if (status === 'Failed' || status === 'Cancelled') {
-                        actionButton = `<button class="btn btn-info btn-sm" onclick="window.resendEmail('${email}')">Resend</button>`;
+                    if (canSendEmail(status)) {
+                        actionButton = `<button onclick="window.sendEmail('${email}')" class="btn btn-success btn-sm">Send</button>`;
+                    } else if (canCancelEmail(status)) {
+                        actionButton = `<button onclick="window.cancelEmail('${email}')" class="btn btn-danger btn-sm">Cancel</button>`;
+                    } else if (canResendEmail(status)) {
+                        actionButton = `<button onclick="window.resendEmail('${email}')" class="btn btn-info btn-sm">Resend</button>`;
                     }
                     
                     try {
@@ -747,6 +756,7 @@ function emailApp() {
                             `<div class="progress" style="height: 20px;"><div class="progress-bar ${progressBarClass}" role="progressbar" style="width: ${progressWidth}%" aria-valuenow="${progressWidth}" aria-valuemin="0" aria-valuemax="100"></div></div>`,
                             actionButton
                         ]).draw(false);
+                        console.log('Updated row for:', email, 'Status:', status);
                     } catch (e) {
                         console.error('Error updating row:', e);
                     }
